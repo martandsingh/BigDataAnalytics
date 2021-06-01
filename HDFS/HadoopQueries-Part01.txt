@@ -1,0 +1,77 @@
+// BIG DATA ANALYSIS - HADOOP COMMANDS
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+
+
+// CHECK HADOOP VERSION
+hadoop version
+
+// EXPLORE HDFS DIRECTORY
+hadoop fs -ls {path}
+hadoop fs -ls /user
+
+// CREATE NEW FOLDER TO HDFS
+hadoop fs -mkdir {folder-name}
+hadoop fs -ls /user/thanos
+
+// DELETE DIRECTORY - option 1
+hadoop fs -rm -r {folder-name}
+hadoop fs -rm -r /user/thanos
+
+// DELETE DIRECTORY - option 2
+hadoop fs -rmdir /user/thanos
+
+// COPY FILE - LOCAL TO HDFS 
+hadoop fs -copyFromLocal {localpath} {hdfspath}
+hadoop fs -copyFromLocal /home/msingh/test.txt /user/msingh
+
+// COPY FILE - HDFS TO LOCAL
+hadoop fs -copyToLocal  {hdfspath} {localpath}
+hadoop fs -copyToLocal  /user/msingh/test.txt /home/msingh
+
+// MOVE FILE - LOCAL TO HDFS
+hadoop fs -moveFromLocal {localpath} {hdfspath}
+hadoop fs -moveFromLocal /home/msingh/test.txt /user/msingh/datafile
+
+// DELETE FILE FROM HDFS
+hadoop fs -rm {filename}
+hadoop fs -rm /user/msingh/test.txt
+
+// COPY FILE - WITHIN HDFS. SOURCE & DESTINATION BOTH WILL HAVE THEIR OWN COPY
+hadoop fs -cp {source} {destination}
+hadoop fs -cp /user/msingh/file.txt /user/msingh/newlocation
+
+// Move FILE - WITHIN HDFS. IT WILL DELETE THE SOURCE FILE.
+hadoop fs -mv {source} {destination}
+hadoop fs -mv /user/msingh/file.txt /user/msingh/newlocation
+
+// CREATE NEW EMPTY FILE AT GIVEN HDFS LOCATION
+hadoop fs -touchz {filepath}
+hadoop fs -touchz /user/cloudera/msingh/hello.txt
+
+// VIEW FILE CONTENT
+hadoop fs -cat {filepath}
+hadoop fs -cat /user/msingh/filename
+
+// VIEW FIRST 10 LINES
+hadoop fs -cat {filepath} | head
+hadoop fs -cat /user/msingh/test.txt | head
+
+// LAST 10 LINES
+hadoop fs -tail {filepath}
+hadoop fs -tail /user/msingh/test.txt
+
+
+// DELETES FILE FROM HDFS RECURSIVELY. USEFUL WHEN YOU WANT TO DELETE A NON-EMPTY DIRECTORY. 
+hadoop fs -rmr <filename/directoryName>
+hadoop -fs -rmr /user/msingh/datafiles
+
+// GET SIZE OF EVERY FILE IN A HDFS DIRECTORY
+hadoop fs -du {hdfs location}
+hadoop fs -du /user/msingh
+
+// GET SIZE OF HDFS FOLDER
+hadoop fs -du -s {hdfs location}
+hadoop fs -du -s /user/cloudera/msingh
