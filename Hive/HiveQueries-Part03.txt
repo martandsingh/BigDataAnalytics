@@ -1,0 +1,127 @@
+// BIG DATA ANALYSIS - HIVE COMMANDS
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// FOR THESE QUERIES WE ARE USING TABLES CREATE IN HiveQueries-Part01.txt
+
+// HIVE COMPLEX DATA TYPES
+
+---------------------------------------------------------------------------------------------
+// ARRAY DEMO - FOR ARRAY DEMO WE WILL USE techarray.csv PRESENT AT https://github.com/martandsingh/BigDataAnalytics/tree/main/dataset
+
+// COPY DATA TO HDFS
+hadoop fs -copyFromLocal /home/cloudera/dataset/techarray.csv /user/cloudera/msingh/arraydemo
+
+// COLLECTION ITEMS TERMINATED BY - will tell you the array element.
+create external table techstack
+(
+id INT,
+technology STRING,
+applications ARRAY<STRING>,
+fee FLOAT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+LOCATION '/user/cloudera/msingh/arraydemo';
+
+// OUTPUT WILL BE LIKE: YOU CAN SEE HOW HIVE IENTIFIED THE ARRAY ELEMENT
+hive> select * from techstack;
+OK
+1	Big Data	["Hadoop","Redshift","Synapse","Hive"]	1000.5
+2	Web Programming:.NetCore:Django:Angular	["800.20"]	NULL
+NULL	Oracle:MSSQL:MySQL	["900.50"]	NULL
+4	No-SQL	["Mongo DB","Cassandra","HBase"]	670.5
+5	Data Intergation	["Azure data factory"]	NULL
+6	Business Intelligence	["Power BI","Tableau","Microstrategy"]	600.5
+
+// YOU CAN SELECT ARRAY ITEM USING INDEX. IT WILL GIVE YOU FIRST ITEM OF THE ARRAY.
+
+hive> select id, technology, applications[1] as techfirstitem, fee from techstack; 
+OK
+1	Big Data	Redshift	1000.5
+2	Web Programming:.NetCore:Django:Angular	NULL	NULL
+NULL	Oracle:MSSQL:MySQL	NULL	NULL
+4	No-SQL	Cassandra	670.5
+5	Data Intergation	NULL	NULL
+6	Business Intelligence	Tableau	600.5
+Time taken: 0.165 seconds, Fetched: 6 row(s)
+
+---------------------------------------------------------------------------------------------
+
+// MAP DEMO - MAP IS SIMPLY A KEY VALUE PAIR
+// FILE USED: mapdemo.csv
+
+// COPY DATA TO HADOOP FILE SYSTEM. YOU CAN USE -put ALSO.
+ hadoop fs -put /home/cloudera/dataset/mapdemo.csv /user/cloudera/msingh/mapdemodata
+ 
+// CREATE TABLES
+create external table mapdemo(
+id INT,
+username STRING,
+userdetails MAP<STRING, STRING>,
+location STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY '|'
+MAP KEYS TERMINATED BY '>'
+LOCATION '/user/cloudera/msingh/mapdemodata';
+
+OUTPUT:
+hive> select * from mapdemo;
+OK
+1	mike	{"department":"I.T","salary":"50000"}	Dubai
+2	elon	{"department":"H.R","salary":"65000"}	London
+3	jessica	{"department":"Customer Care","salary":"60000"}	New York
+4	stephanie	{"department":"Administration","salary":"63000"}	Edinburg
+Time taken: 0.191 seconds, Fetched: 4 row(s)
+
+// SELECT MAP ITEM
+hive> select username, userdetails['department'], userdetails['salary'] from mapdemo;
+OK
+mike	I.T	50000
+elon	H.R	65000
+jessica	Customer Care	60000
+stephanie	Administration	63000
+Time taken: 0.177 seconds, Fetched: 4 row(s)
+
+------------------------------------------------------------------------------------------------
+
+// STRUCT DEMO
+
+// COPY FILE TO HDFS
+hadoop fs -put /home/cloudera/dataset/structdemo.csv /user/cloudera/msingh/structdemo
+
+// FILE USED structdemo.csv
+create external table structdemo
+(
+id INT,
+username STRING,
+address STRUCT<apartment_no:INT, street:STRING, city:STRING, country:STRING>,
+age INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY '$'
+LOCATION '/user/cloudera/msingh/structdemo';
+
+// SELECT DATAhive> select * from structdemo;
+OK
+1	mike	{"apartment_no":2,"street":"3rd street","city":"London","country":"U.K"}	50
+2	elon	{"apartment_no":24,"street":"5th street","city":"New York","country":"U.S"}	34
+3	jessica	{"apartment_no":67,"street":"21st street","city":"Paris","country":"France"}	36
+4	stephanie	{"apartment_no":2,"street":"3rd street","city":"Venice","country":"Italy"}	42
+
+
+
+// YOU CAN SELECT STRUCT ITEM AS FOLLOW
+hive> select id, username, address.city, address.country  from structdemo;
+OK
+1	mike	London	U.K
+2	elon	New York	U.S
+3	jessica	Paris	France
+4	stephanie	Venice	Italy
+Time taken: 0.176 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------------------------
