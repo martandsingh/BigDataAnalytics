@@ -1,0 +1,100 @@
+// BIG DATA ANALYSIS - HIVE COMMANDS
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// FOR THESE QUERIES WE ARE USING TABLES CREATE IN HiveQueries-Part01.txt
+
+// INSERT DATA USING AND EXISTING TABLE - Column should be same
+INSERT INTO sales_db_new 
+SELECT * FROM sales_db;
+
+// GET UNIQUE COLUMN VALUES
+select distinct(itemtype) from sales_record;
+
+// MULTIPLE INSERT FROM A SINGLE TABLE
+// STEP 1: CREATE AN EXTERNAL TABLE TO SAVE ONLY THE RECORDS WITH ITEM TYPE 'Fruits'
+// STEP 2: CREATE AN EXTERNAL TABLE TO SAVE ONLY THE RECORDS WITH ITEM TYPE 'Meat'
+// STEP 3: THEN FILL THESE TABLE USING MULTIPLE INSERT
+
+CREATE EXTERNAL TABLE sales_fruits
+(
+Region STRING,
+Country STRING,
+ItemType STRING,
+SalesChannel STRING,
+OrderPriority STRING,
+OrderDate STRING,
+OrderID STRING,
+ShipDate STRING,
+UnitsSold INT,
+UnitPrice FLOAT,
+UnitCost FLOAT,
+TotalRevenue FLOAT,
+TotalCost FLOAT,
+TotalProfit FLOAT
+)
+COMMENT 'Sales record hive table for fruits'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+CREATE EXTERNAL TABLE sales_meat
+(
+Region STRING,
+Country STRING,
+ItemType STRING,
+SalesChannel STRING,
+OrderPriority STRING,
+OrderDate STRING,
+OrderID STRING,
+ShipDate STRING,
+UnitsSold INT,
+UnitPrice FLOAT,
+UnitCost FLOAT,
+TotalRevenue FLOAT,
+TotalCost FLOAT,
+TotalProfit FLOAT
+)
+COMMENT 'Sales record hive table for meat'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+// YOU CAN CHECK BOTH THE TABLE EITHER BY USING SELECT OR DESCRIBE COMMAND
+select * from sales_meat;
+select * from sales_fruits;
+
+// NOW FILLING TABLES - BELOW COMMAND WILL FILL sales_fruits & sales_meat table as per provided filter criteria.
+// YOU CAN ADD AS MANY AS INSERT COMMANDS YOU WANT. FILTER VALUES ARE CASE SENSITIVE. meat is not equal to Meat.
+from sales_record
+insert into sales_fruits select * where itemtype='Fruits'
+insert into sales_meat select * where itemtype='Meat';
+
+// ALTER TABLE - ADD NEW COLUMNS
+alter table sales_record_ext
+add columns (newprice float, newtax float)
+
+// ALTER TABLE  - CHANGE COLUMN NAME
+// CHANGING COLUMN region to location. YOU CAN ALSO CHANGE THE DATA TYPE ALSO.
+alter table sales_record	
+change column id region location String;
+
+// ALTER TABLE - CHANGE TABLE NAME
+// RENAMING A TABLE WILL CHANGE THE DATA LOCATION ALSO IN HDFS
+ALTER TABLE sales_record 
+rename to sales_order;
+
+// ALTER TABLE - ADDING NEW PROPERTY
+ALTER TABLE sales_order
+set TBLPROPERTIES('auto.delete'='True')
+
+// ALTER TABLE - CHANGE FILE FORMAT
+ALTER TABLE sales_record
+set fileformat avro;
+
+// CHANGE THE DATA LOCATION
+ALTER TABLE sales_order
+set location = '/user/msingh/newlocation'
