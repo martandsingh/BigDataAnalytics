@@ -8,3 +8,4 @@ It helps you to write SQL-Like queries, which internally gets converted to Map-R
 3. Good for warehouse purpose
 4. Supports partitions & bucket
 
+For detailed information: https://www.guru99.com/introduction-hive.html
