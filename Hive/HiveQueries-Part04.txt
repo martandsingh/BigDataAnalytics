@@ -1,0 +1,189 @@
+// BIG DATA ANALYSIS - HIVE COMMANDS
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// FOR THESE QUERIES WE ARE USING TABLES CREATE IN HiveQueries-Part03.txt
+
+
+-------------------------------------------------------------------------------
+// GET THE SIZE OF ARRAY OR MAP DATATYPE USING size FUNCTION - size()
+hive> select size(applications), technology from techstack;
+OK
+4	Big Data
+1	Web Programming:.NetCore:Django:Angular
+1	Oracle:MSSQL:MySQL
+3	No-SQL
+1	Data Intergation
+3	Business Intelligence
+Time taken: 0.1 seconds, Fetched: 6 row(s)
+------------------------------------------------------------------------------- 
+
+
+// CHECK THE KEYS OF MAP DATATYPE FIELD - map_keys()
+hive> select map_keys(userdetails) from mapdemo;
+OK
+["department","salary"]
+["department","salary"]
+["department","salary"]
+["department","salary"]
+Time taken: 0.176 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------
+
+// LIST OF ALL VALUES FOR MAP DATATYPE = map_values()
+hive> select map_values(userdetails) from mapdemo;
+OK
+["I.T","50000"]
+["H.R","65000"]
+["Customer Care","60000"]
+["Administration","63000"]
+Time taken: 1.755 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+// CONDITIONAL FUNCTIONS - IF 
+// SO BELOW WE ARE CHECKING SALARY KEY OF MAP DATA TYPE. SO IF SALARY > 60000 THEN IT IS GOOD SALARY OTHERWISE IT IS AVERAGE.
+hive> select username, userdetails['salary'],if(userdetails["salary"] > 60000, 'Good Salary', 'Average Salary') from mapdemo;
+OK
+mike	50000	Average Salary
+elon	65000	Good Salary
+jessica	60000	Average Salary
+stephanie	63000	Good Salary
+Time taken: 0.232 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+// CHECK NULL - isnull()
+select isnull(NULL) - true
+select isnull(123) - false
+
+// CASE STATEMENT - IT WILL DEFINE CLASSIC CASE STATEMENT
+// Let's SAY WE USE structdemo TABLE WE CREATE IN HiveQueries-Part03. WE WANT TO SHOW 
+IF WE ARE IN LONDON SHOW 'I AM IN LONDON', 
+IF IN NEW YORK - 'I AM IN NEW YORK'
+// FOR ALL OTHER CASE - I AM UNAVAILABLE
+
+select username, address.city, case address.city
+when 'London' then 'I am in London'
+when 'New York' then 'I am in New York'
+else 'I am unavailable'
+end
+from structdemo;
+
+OK
+mike	London	I am in London
+elon	New York	I am in New York
+jessica	Paris	I am unavailable
+stephanie	Venice	I am unavailable
+Time taken: 0.105 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+
+// STRING FUNCTIONS
+//concat - concat the string provided. IT THE BELOW EXAMPLE IF YOU WILL SEE WE ARE PROVIDING TEXT TO BE CONCATENATED AND THE DELIMITER.
+// concat(string1, delim_text1, string2, delim_text2...)
+hive> select username, concat(address.apartment_no,'--', address.street, '==', address.city, '++', address.country) from structdemo;
+OK
+mike	2--3rd street==London++U.K
+elon	24--5th street==New York++U.S
+jessica	67--21st street==Paris++France
+stephanie	2--3rd street==Venice++Italy
+Time taken: 0.132 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+// concat_ws - THIS IS ALSO USED TO CONCATENATE STRING BUT WE PROVIDE ONLY SINGLE DELIMITER TEXT.
+// concat_ws(delim_text, string1, string2....)
+
+hive> select username, concat_ws('-->', address.street, address.city, address.country) from structdemo;
+OK
+mike	3rd street-->London-->U.K
+elon	5th street-->New York-->U.S
+jessica	21st street-->Paris-->France
+stephanie	3rd street-->Venice-->Italy
+Time taken: 0.235 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------
+
+
+// len() - get length of a string. RETURNS THE LENGTH OF USERNAMES
+hive> select length(username), username from structdemo;
+OK
+4	mike
+4	elon
+7	jessica
+9	stephanie
+Time taken: 0.139 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------
+
+// LOWER, UPPER, REVERSE FUNCTION. NAMES ARE PRETTY EXPRESIVE. LET's DO IT.
+hive> select LOWER(username), UPPER(username), reverse(username) from structdemo;
+OK
+mike	MIKE	ekim
+elon	ELON	nole
+jessica	JESSICA	acissej
+stephanie	STEPHANIE	einahpets
+Time taken: 0.116 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+// PADDING - LPAD, RPAD. IT WILL PAD YOUR STRING. LETS TRY IT BY EXAMPLE
+hive> select lpad(username, 6, '*'), rpad(username, 8, '#') from structdemo;
+OK
+**mike	mike####
+**elon	elon####
+jessic	jessica#
+stepha	stephani
+Time taken: 0.159 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------
+
+
+// SPLIT - SPLIT FUNCTION WORKS AS IT SOUNDS. IT SPLIT A STRING BASED ON GIVEN DELIMETER;
+hive> select username, split(username, 'e') from structdemo;
+OK
+mike	["mik",""]
+elon	["","lon"]
+jessica	["j","ssica"]
+stephanie	["st","phani",""]
+Time taken: 0.142 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
+
+
+// SUBSTRING - subtring(field, start, length) / substring(field, start)
+// INDEX STARTS FROM 1 in SUBSTRING
+select username, substring(username, 1), substring(username, 2, 3) from structdemo;
+
+hive> select username, substring(username, 1), substring(username, 2, 3) from structdemo;
+OK
+mike	mike	ike
+elon	elon	lon
+jessica	jessica	ess
+stephanie	stephanie	tep
+Time taken: 0.168 seconds, Fetched: 4 row(s)
+
+-------------------------------------------------------------------------------
+
+// regexp_replace(text, oldvalue, newvalue)  = REPLACE A WORD OR CHARACTER
+// BELOW EXAMPLE WILL REPLACE 'e' TO '#' IN USERNAME FIELD.
+
+hive> select username, regexp_replace(username, 'e', '#') from structdemo;
+OK
+mike	mik#
+elon	#lon
+jessica	j#ssica
+stephanie	st#phani#
+Time taken: 0.163 seconds, Fetched: 4 row(s)
+
+
+-------------------------------------------------------------------------------
