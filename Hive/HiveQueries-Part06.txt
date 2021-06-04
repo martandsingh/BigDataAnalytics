@@ -1,0 +1,42 @@
+// BIG DATA ANALYSIS - HIVE  MATHEMATICAL FUNCTION
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// HIVE FREQUENTLY USE MATHEMATICAL FUNCTION
+
+
+------------------------------------------------------------------------------
+
+// ROUND - TO ROUND OF NUMBER
+// IF DIGIT AFTER DECIMAL IS 5 or GREATE THAN FIVE THAN NUMBER WILL ROUND OFF TO NEXT NUMBER.
+hive> select round(6.4), round(6.5), round(6.6);
+OK
+6.0	7.0	7.0
+Time taken: 0.043 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// CEIL, FLOOR - CEIL WILL GIVE YOU NEXT WHOLE NUMBER, FLOOR WILL GIVE YOUR LAST WHOLE NUMBER
+hive> select floor(3.6), ceil(4.3);
+OK
+3	5
+Time taken: 0.062 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// RAND - GENERATE RANDOM NUMBER BETWEEM 0 & 1
+hive> select rand();
+OK
+0.9505929821346862
+Time taken: 0.054 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// SQRT, POW(NUMBER, POWER) - SQRT TO CALCULATE SQUARE ROOT, POW TO CALCULATE POWER OF A GIVEN NUMBER.
+hive> select sqrt(9), pow(2, 4);
+OK
+3.0	16.0
+Time taken: 0.049 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------

@@ -1,0 +1,81 @@
+// BIG DATA ANALYSIS - HIVE DATE FUNCTION
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// HIVE FREQUENTLY USED DATE FUNCTIONS
+
+------------------------------------------------------------------------------
+// month, year, day  - TO FIND MONTH DATE & YEAR OUT OF A DATE STRING
+hive> select month('2021-01-03'), day('2021-01-03'), year('2021-01-03');
+OK
+1	3	2021
+Time taken: 0.06 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+// hour, minute, second - TO FIND HOUR MINUTE & SECOND OUT OF A TIMESTAMP
+hive> select hour('2021-01-03 12:20:11'), minute('2021-01-03 12:20:11'), second('2021-01-03 12:20:11');
+OK
+12	20	11
+Time taken: 0.073 seconds, Fetched: 1 row(s)
+
+
+------------------------------------------------------------------------------
+
+// datediff - TO CALCULATE DATE DIFFERENCE
+hive> select datediff('2021-01-09', '2021-01-04');
+OK
+5
+Time taken: 0.065 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// date_add, date_sub - TO ADD & SUBTRACT DAYS
+hive> select date_add('2021-01-09', 10), date_sub('2021-01-09', 10)  ;
+OK
+2021-01-19	2020-12-30
+Time taken: 0.061 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// add_month, month_between  = TO ADD MONTH TO THE GIVEN DATE & CALCULATE MONTH BETWEEN TO DATES
+hive> select add_months('2021-02-04', 4), months_between('2021-02-03', '2020-03-20');
+OK
+2021-06-04	10.4516129
+Time taken: 0.067 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// current_date, current_timestamp - TO GET CURRENT DATE OR TIMESTAMP
+hive> select current_date(), current_timestamp();
+OK
+2021-06-04	2021-06-04 06:12:31.332
+Time taken: 0.059 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// unix_timestamp - THE time ticks since 01-jan-1900
+// CURRENT timestamp
+
+hive> select unix_timestamp();
+unix_timestamp(void) is deprecated. Use current_timestamp instead.
+OK
+1622812500
+
+------------------------------------------------------------------------------
+
+// calculate timestamp for the given date
+hive> select unix_timestamp('2012-01-02 11:12:20');
+OK
+1325531540
+Time taken: 0.045 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
+
+// calculate timestamp for the given date with format
+hive>  select unix_timestamp('2012/01/02', 'yyyy/MM/dd');
+OK
+1325491200
+Time taken: 0.054 seconds, Fetched: 1 row(s)
+
+------------------------------------------------------------------------------
