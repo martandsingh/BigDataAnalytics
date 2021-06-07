@@ -5,6 +5,11 @@
 #### Dataset: https://github.com/martandsingh/BigDataAnalytics/tree/main/dataset/trading/BTC-USD.csv  
 #### FOLLOW US: https://www.facebook.com/codemakerz 
 
+#### How to run queries?
+Step1: Copy your data file to hadoop system using  
+hadoop fs -put {localfilepath} {hdfspath}  
+step2: hive -f "btc-analysis.hive"  
+
 ### Sample Dataset:
 ###### Date,Open,High,Low,Close,Adj Close,Volume  
 2014-09-17,465.864014,468.174011,452.421997,457.334015,457.334015,21056800  
