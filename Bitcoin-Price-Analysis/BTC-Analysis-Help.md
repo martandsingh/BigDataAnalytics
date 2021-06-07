@@ -6,9 +6,10 @@
 #### FOLLOW US: https://www.facebook.com/codemakerz 
 
 #### How to run queries?
-Step1: Copy your data file to hadoop system using  
-hadoop fs -put {localfilepath} {hdfspath}  
-step2: hive -f "btc-analysis.hive"  
+##### Step1: Copy your data file to hadoop system using  
+###### hadoop fs -put {localfilepath} {hdfspath}  
+       
+##### step2: hive -f "bitcoin-analysis.hive"  
 
 ### Sample Dataset:
 ###### Date,Open,High,Low,Close,Adj Close,Volume  
