@@ -74,13 +74,22 @@ LOAD DATA INPATH ${hdfsDataFileLocation} OVERWRITE INTO TABLE btc_price_analysis
 
 !echo "Creating managed table btc_date...";
 
-create  table btc_date_trans
+create  table btc_month_week_aggregate
 row format delimited
 fields terminated by ','
 stored as textfile
 AS
 select pricedate,month(pricedate) as month,year(pricedate)
-as year,low,high,open,close,volume from btc_price_analysis;
+as year, date_format(pricedate, "W") as week_of_month,low,high,open,close,volume from btc_price_analysis;
+
+create  table btc_week_day_aggregate2
+row format delimited
+fields terminated by ','
+stored as textfile
+AS
+select pricedate,month(pricedate) as month,year(pricedate)
+as year, date_format(pricedate, "W") as week_of_month, day(pricedate) as day, low, high, open, close, volume from btc_price_analysis
+where day(pricedate) in ('1','7','14','21', 28 );
 
 !echo "Table btc_date created.";
 
@@ -98,9 +107,9 @@ INSERT OVERWRITE LOCAL DIRECTORY ${minFileName}
 ROW FORMAT DELIMITED 
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-SELECT a.year as year, a.month as month, a.lowest as lowest_price FROM 
-( select month, year, min(low) as lowest 
-from btc_date_trans group by year,month ) AS a order by year,month;
+SELECT a.year as year, a.month as month, week_of_month, a.lowest as lowest_price FROM 
+( select month, year, date_format(pricedate, "W") as week_of_month, min(low) as lowest 
+from btc_date_trans group by year,month ) AS a order by year,month, week_of_month;
 
 !echo "Minimum price analysis exported.";
 

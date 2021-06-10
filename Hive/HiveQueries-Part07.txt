@@ -1,0 +1,149 @@
+
+// BIG DATA ANALYSIS - HIVE JOINS COMMANDS
+// AUTHOR: MARTAND SINGH
+// EMAIL: martandsays@gmail.com
+// FACEBOOK: https://www.facebook.com/codemakerz
+// WANT TO PARTICIPATE? CONTACT US ANYTIME.
+// DATASET - WE ARE USING 2 DATASETS employee & department. YOU CAN DOWNLOAD BOTH THE FILES FROM 
+// https://github.com/martandsingh/BigDataAnalytics/tree/main/dataset/joindatasets
+
+
+// EXECUTE FOLLOWING COMMANDS TO CREATE TWO SEPERATE DIECTORIES FOR employee & department AND TRANSFER DATA FILES TO THOSE FOLDERS.
+// FOLLOWING COMMANDS SHOULD BE RUN ON HADOOP CONSOLE (NOT HIVE)
+hadoop fs -mkdir /user/cloudera/msingh/employee
+hadoop fs -mkdir /user/cloudera/msingh/department
+hadoop fs -put /home/cloudera/dataset/employee.csv /user/cloudera/msingh/employee
+hadoop fs -put /home/cloudera/dataset/department.csv /user/cloudera/msingh/department
+
+
+// CREATING employee TABLE. HERE deptid IS THE ID OF TABLE department. WE ARE SKIPPING THE FIRST ROW AS IT INCLUDES COLUMN NAMES
+CREATE EXTERNAL TABLE employee
+(
+id int,
+firstname string,
+lastname string,
+deptid int,
+salary float
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+LOCATION '/user/cloudera/msingh/employee'
+tblproperties ("skip.header.line.count"="1");
+
+
+// CREATE department TABLE. WE ARE SKIPPING THE FIRST ROW AS IT INCLUDES COLUMN NAMES
+CREATE EXTERNAL TABLE department
+(
+id int,
+department string,
+details string
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+LOCATION '/user/cloudera/msingh/department'
+tblproperties ("skip.header.line.count"="1");
+
+// STRUCTURE OF employee;
+hive> select * from employee;
+employee.id	employee.firstname	employee.lastname	employee.deptid	employee.salary
+1	Martand	Singh	1	100000.0
+2	Amy	Jackson	1	90000.0
+3	Adam	Sandler	2	95000.0
+4	Garry	James	3	78000.0
+5	paddy	crew	3	69000.0
+6	terry	mathews	4	67000.0
+7	Abby	Neil	10	60000.0
+8	Deck	Neil	11	60430.0
+Time taken: 0.225 seconds, Fetched: 8 row(s)
+
+
+// STRUCTURE OF department
+hive> select * from department;
+
+department.id	department.department	department.details
+1	I.T	IT department
+2	H.R	 Human Resources
+3	Networking	Networking
+4	Finance	Finance department
+5	PMO	project management
+6	PMO-IT	project management
+Time taken: 0.15 seconds, Fetched: 6 row(s)
+
+// THERE ARE 4 KIND OF JOINS IN HIVE
+// 1. INNER JOIN - ONLY MATCHING RECORDS
+// 2. RIGHT JOIN - ALL RECORDS OF RIGHT TABLE. CONSIST NULL VALUES FOR NON-MATCHING COLUMNs;
+// 3. LEFT JOIN - ALL RECORDS OF LEFT TABLE. CONSIST NULL VALUES FOR NON-MATCHING COLUMNs;
+// 4. FULL JOIN - ALL RECORDS OF BOTH THE TABLE. CONSIST NULL VALUES FOR NON-MATCHING COLUMNs;
+
+
+//  INNER JOIN. IT WILL SHOW ALL THE MATCHING RECORDS WITH THERE RESPECTIVE DEPARTMENT.
+
+hive> select emp.id as employee_id, emp.firstname, emp.salary, dept.department from employee emp join department dept on emp.deptid = dept.id;
+
+employee_id	emp.firstname	emp.salary	dept.department
+1	Martand	100000.0	I.T
+2	Amy	90000.0	I.T
+3	Adam	95000.0	H.R
+4	Garry	78000.0	Networking
+5	paddy	69000.0	Networking
+6	terry	67000.0	Finance
+
+
+// FULL JOIN - SHOWS ALL THE RECORDS OF BOTH THE TABLE AND SHOW NULL VALUES FOR NON-MATCHING RECORDS
+hive> select emp.id as employee_id, emp.firstname, emp.salary, dept.department from employee emp full join department dept on emp.deptid = dept.id;
+
+employee_id	emp.firstname	emp.salary	dept.department
+2	Amy	90000.0	I.T
+1	Martand	100000.0	I.T
+3	Adam	95000.0	H.R
+5	paddy	69000.0	Networking
+4	Garry	78000.0	Networking
+6	terry	67000.0	Finance
+NULL	NULL	NULL	PMO
+NULL	NULL	NULL	PMO-IT
+7	Abby	60000.0	NULL
+8	Deck	60430.0	NULL
+
+
+// LEFT JOIN - ALL THE RECORDS OF LEFT TABLE WITH NULL VALUES FOR NON-MATCHING COLUMNs;
+hive> select emp.id as employee_id, emp.firstname, emp.salary, dept.department from employee emp left join department dept on emp.deptid = dept.id;
+employee_id	emp.firstname	emp.salary	dept.department
+1	Martand	100000.0	I.T
+2	Amy	90000.0	I.T
+3	Adam	95000.0	H.R
+4	Garry	78000.0	Networking
+5	paddy	69000.0	Networking
+6	terry	67000.0	Finance
+7	Abby	60000.0	NULL
+8	Deck	60430.0	NULL
+
+
+// RIGHT JOIN - ALL THE RECORDS OF RIGHT TABLE WITH NULL VALUES FOR NON-MATCHING COLUMNs;
+hive> select emp.id as employee_id, emp.firstname, emp.salary, dept.department from employee emp right join department dept on emp.deptid = dept.id;
+OK
+employee_id	emp.firstname	emp.salary	dept.department
+1	Martand	100000.0	I.T
+2	Amy	90000.0	I.T
+3	Adam	95000.0	H.R
+4	Garry	78000.0	Networking
+5	paddy	69000.0	Networking
+6	terry	67000.0	Finance
+NULL	NULL	NULL	PMO
+NULL	NULL	NULL	PMO-IT
+
+// JOINS ARE EXPENSIVE OPERATIONS. SO TRY TO AVOID THEM
+// HIVE SAVES LEFT(FIRST) TABLE IN MEMORY AND STREAM THE SECOND OR RIGHT TABLE TO PERFORM JOIN EFFICIENTLY. SO MAKE SURE RIGHT OR SECOND TABLE IS ALWAYS THE BIGGER ONE.
+// IF TABLES ARE SMALLER THAN 25 MB THEN HIVE USES MAP JOIN.
+
+// YOU CAN DISABLE/ENABLE THIS USING 
+hive.auto.convert.join=true/false;
+
+// YOU CAN SET FILE SIZE TO USE MAP JOIN USING BELOW COMMAND:
+set hive.mapjoin.smalltable.filesize = 	30000000;
+
+
+// FINISH
